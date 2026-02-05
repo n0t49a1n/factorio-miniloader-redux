@@ -9,11 +9,12 @@ local const = require('lib.constants')
 local supported_mods = {
     ['base'] = 'base',
     ['space-age'] = 'space_age',
+    ['TurboBelt'] = 'turbo_belt', --Turbo Belt by Stargateur
     ['matts-logistics'] = 'matt',
     ['Krastorio2'] = 'krastorio',
     ['boblogistics'] = 'bob',
     ['Load-Furn-2-SpaceAgeFix'] = 'adv_furnace_2',
-    ['space-exploration'] = 'space_exploration',
+    ['space-exploration'] = 'space_exploration'
 }
 
 -- contains switches for all enabled game modes. The keys are the canonical
@@ -46,6 +47,10 @@ local function check_space_age()
     return game_mode.space_age
 end
 
+local function check_turbo_belt()
+    return game_mode.turbo_belt
+end
+
 local function check_chute()
     return Framework.settings:startup_setting(const.settings_names.chute_loader) == true
 end
@@ -76,7 +81,7 @@ end
 ---@return number consumption_amount
 ---@return number drain_amount
 local function energy_void()
-    return { type = 'void' }, 0, 0
+    return {type = 'void'}, 0, 0
 end
 
 ---@param prototype data.EntityWithOwnerPrototype
@@ -95,10 +100,14 @@ local function select_data(data)
             -- mod + space age?
             if game_mode.space_age then
                 local sa_name = name .. '_space_age'
-                if data[sa_name] then return data[sa_name] end
+                if data[sa_name] then
+                    return data[sa_name]
+                end
             end
             -- just mod?
-            if data[name] then return data[name] end
+            if data[name] then
+                return data[name]
+            end
         end
     end
 
@@ -130,25 +139,25 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         base = {
-                            { type = 'item', name = 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'steel-plate',      amount = 4 },
-                            { type = 'item', name = 'inserter',         amount = 2 },
-                        },
+                            {type = 'item', name = 'underground-belt', amount = 1},
+                            {type = 'item', name = 'steel-plate', amount = 4},
+                            {type = 'item', name = 'inserter', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        base = { 'logistics', 'steel-processing', 'electronics' },
+                        base = {'logistics', 'steel-processing', 'electronics'}
                     }
                 end,
                 speed_config = {
                     items_per_second = 15,
                     rotation_speed = 0.075,
                     inserter_pairs = 1,
-                    stack_size_bonus = 0,
-                },
+                    stack_size_bonus = 0
+                }
             }
-        end,
+        end
     },
     -- fast miniloader, base game
     ['fast'] = {
@@ -166,30 +175,30 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         base = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 1 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = dash_prefix .. 'inserter',         amount = 2 },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = dash_prefix .. 'inserter', amount = 2}
                         },
                         bob = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 1 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'long-handed-inserter',            amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = 'long-handed-inserter', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        base = { 'logistics-2', const:name_from_prefix(''), },
+                        base = {'logistics-2', const:name_from_prefix('')}
                     }
                 end,
                 speed_config = {
                     items_per_second = 30,
                     rotation_speed = 0.125,
                     inserter_pairs = 1,
-                    stack_size_bonus = 0,
-                },
+                    stack_size_bonus = 0
+                }
             }
-        end,
+        end
     },
     -- express miniloader, base game
     ['express'] = {
@@ -207,35 +216,36 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         base = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 1 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'bulk-inserter',                   amount = 2 },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = 'bulk-inserter', amount = 2}
                         },
                         bob = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 1 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'fast-inserter',                   amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = 'fast-inserter', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        base = { 'logistics-3', const:name_from_prefix('fast'), },
+                        base = {'logistics-3', const:name_from_prefix('fast')}
                     }
                 end,
                 speed_config = {
                     items_per_second = 45,
                     rotation_speed = 0.125,
                     inserter_pairs = 1,
-                    stack_size_bonus = 1,
-                },
+                    stack_size_bonus = 1
+                }
             }
-        end,
+        end
     },
-
-    -- turbo miniloader, space age game
+    -- turbo miniloader, space age game or turbo belt standalone
     ['turbo'] = {
-        condition = check_space_age,
+        condition = function()
+            return check_space_age() or check_turbo_belt()
+        end,
         data = function(dash_prefix)
             local previous = 'express'
 
@@ -249,27 +259,41 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         base = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 1 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'bulk-inserter',                   amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = 'bulk-inserter', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
-                    return select_data {
-                        space_age = { 'turbo-transport-belt', 'metallurgic-science-pack', const:name_from_prefix('express'), },
-                    }
+                    local data = {}
+
+                    -- TurboBelt if present
+                    if check_turbo_belt() then
+                        data.turbo_belt = {
+                            'turbo-transport-belt',
+                            const:name_from_prefix('express')
+                        }
+                    else
+                        -- Space Age if present
+                        data.space_age = {
+                            'turbo-transport-belt',
+                            'metallurgic-science-pack',
+                            const:name_from_prefix('express')
+                        }
+                    end
+
+                    return select_data(data)
                 end,
                 speed_config = {
                     items_per_second = 60,
                     rotation_speed = 0.25,
                     inserter_pairs = 1,
-                    stack_size_bonus = 0,
-                },
+                    stack_size_bonus = 0
+                }
             }
-        end,
+        end
     },
-
     -- stack miniloader, space age game
     ['stack'] = {
         condition = check_space_age,
@@ -289,27 +313,26 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         space_age = {
-                            { type = 'item', name = const:name_from_prefix(previous), amount = 1 },
-                            { type = 'item', name = 'turbo-underground-belt',         amount = 1 },
-                            { type = 'item', name = 'stack-inserter',                 amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = 'turbo-underground-belt', amount = 1},
+                            {type = 'item', name = 'stack-inserter', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        space_age = { 'logistics-3', 'stack-inserter', const:name_from_prefix('turbo'), },
+                        space_age = {'logistics-3', 'stack-inserter', const:name_from_prefix('turbo')}
                     }
                 end,
                 speed_config = {
                     items_per_second = 60,
                     rotation_speed = 0.25,
                     inserter_pairs = 1,
-                    stack_size_bonus = 0,
-                },
+                    stack_size_bonus = 0
+                }
             }
-        end,
+        end
     },
-
     -- gravity assisted chute loader
     ['chute'] = {
         condition = check_chute,
@@ -324,7 +347,9 @@ local loaders = {
                 speed = data.raw['transport-belt']['transport-belt'].speed / 4,
                 energy_source = energy_void,
                 research_trigger = {
-                    type = 'craft-item', item = 'iron-gear-wheel', count = 100,
+                    type = 'craft-item',
+                    item = 'iron-gear-wheel',
+                    count = 100
                 },
                 corpse_gfx = '',
                 belt_gfx = gfx,
@@ -332,28 +357,27 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         base = {
-                            { type = 'item', name = 'transport-belt',  amount = 1 },
-                            { type = 'item', name = 'iron-plate',      amount = 4 },
-                            { type = 'item', name = 'burner-inserter', amount = 2 },
-                        },
+                            {type = 'item', name = 'transport-belt', amount = 1},
+                            {type = 'item', name = 'iron-plate', amount = 4},
+                            {type = 'item', name = 'burner-inserter', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     local technology = game_mode.bob and 'logistics-0' or 'logistics'
                     return select_data {
-                        base = { technology },
+                        base = {technology}
                     }
                 end,
                 speed_config = {
                     items_per_second = 3.75,
                     rotation_speed = 0.01875,
                     inserter_pairs = 1,
-                    stack_size_bonus = 0,
-                },
+                    stack_size_bonus = 0
+                }
             }
-        end,
+        end
     },
-
     -- =================================================
     -- == Matt's logistics
     -- =================================================
@@ -375,25 +399,25 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         matt = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 1 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'bulk-inserter',                   amount = 4 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = 'bulk-inserter', amount = 4}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        matt = { 'logistics-4', const:name_from_prefix(previous), },
+                        matt = {'logistics-4', const:name_from_prefix(previous)}
                     }
                 end,
                 speed_config = {
                     items_per_second = 90,
                     rotation_speed = 0.25,
                     inserter_pairs = 1,
-                    stack_size_bonus = 3,
-                },
+                    stack_size_bonus = 3
+                }
             }
-        end,
+        end
     },
     ['extreme-fast'] = {
         condition = check_matt,
@@ -412,25 +436,25 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         matt = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 2 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'bulk-inserter',                   amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 2},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = 'bulk-inserter', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        matt = { 'logistics-5', const:name_from_prefix(previous), },
+                        matt = {'logistics-5', const:name_from_prefix(previous)}
                     }
                 end,
                 speed_config = {
                     items_per_second = 180,
                     rotation_speed = 0.5,
                     inserter_pairs = 2,
-                    stack_size_bonus = 2,
-                },
+                    stack_size_bonus = 2
+                }
             }
-        end,
+        end
     },
     ['ultra-express'] = {
         condition = check_matt,
@@ -449,25 +473,25 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         matt = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 2 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'bulk-inserter',                   amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 2},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = 'bulk-inserter', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        matt = { 'logistics-6', const:name_from_prefix(previous), },
+                        matt = {'logistics-6', const:name_from_prefix(previous)}
                     }
                 end,
                 speed_config = {
                     items_per_second = 270,
                     rotation_speed = 0.5,
                     inserter_pairs = 3,
-                    stack_size_bonus = 2,
-                },
+                    stack_size_bonus = 2
+                }
             }
-        end,
+        end
     },
     ['extreme-express'] = {
         condition = check_matt,
@@ -486,25 +510,25 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         matt = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 2 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'bulk-inserter',                   amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 2},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = 'bulk-inserter', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        matt = { 'logistics-7', const:name_from_prefix(previous), },
+                        matt = {'logistics-7', const:name_from_prefix(previous)}
                     }
                 end,
                 speed_config = {
                     items_per_second = 360,
                     rotation_speed = 0.5,
                     inserter_pairs = 4,
-                    stack_size_bonus = 2,
-                },
+                    stack_size_bonus = 2
+                }
             }
-        end,
+        end
     },
     ['ultimate'] = {
         condition = check_matt,
@@ -523,27 +547,26 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         matt = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 2 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'bulk-inserter',                   amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 2},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = 'bulk-inserter', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        matt = { 'logistics-8', const:name_from_prefix(previous), },
+                        matt = {'logistics-8', const:name_from_prefix(previous)}
                     }
                 end,
                 speed_config = {
                     items_per_second = 450,
                     rotation_speed = 0.5,
                     inserter_pairs = 4,
-                    stack_size_bonus = 7,
-                },
+                    stack_size_bonus = 7
+                }
             }
-        end,
+        end
     },
-
     -- =================================================
     -- == Krastorio 2
     -- =================================================
@@ -564,25 +587,25 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         krastorio = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 1 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'kr-rare-metals',                  amount = 10 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = 'kr-rare-metals', amount = 10}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        krastorio = { 'kr-logistic-4', const:name_from_prefix(previous), },
+                        krastorio = {'kr-logistic-4', const:name_from_prefix(previous)}
                     }
                 end,
                 speed_config = {
                     items_per_second = 60,
                     rotation_speed = 0.25,
                     inserter_pairs = 1,
-                    stack_size_bonus = 0,
-                },
+                    stack_size_bonus = 0
+                }
             }
-        end,
+        end
     },
     ['kr-superior'] = {
         condition = check_krastorio,
@@ -600,27 +623,26 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         krastorio = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 1 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'kr-imersium-gear-wheel',          amount = 10 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = 'kr-imersium-gear-wheel', amount = 10}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        krastorio = { 'kr-logistic-5', const:name_from_prefix(previous), },
+                        krastorio = {'kr-logistic-5', const:name_from_prefix(previous)}
                     }
                 end,
                 speed_config = {
                     items_per_second = 90,
                     rotation_speed = 0.25,
                     inserter_pairs = 1,
-                    stack_size_bonus = 3,
-                },
+                    stack_size_bonus = 3
+                }
             }
-        end,
+        end
     },
-
     -- =================================================
     -- == Bob's Logistics
     -- =================================================
@@ -640,20 +662,20 @@ local loaders = {
                 corpse_gfx = '', -- use basic graphics for explosion and remnants
                 ingredients = function()
                     local ingredients = {
-                        { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                        { type = 'item', name = 'bob-steam-inserter',              amount = 2 },
+                        {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                        {type = 'item', name = 'bob-steam-inserter', amount = 2}
                     }
 
                     if check_chute() then
-                        table.insert(ingredients, { type = 'item', name = const:name_from_prefix(previous), amount = 1 })
+                        table.insert(ingredients, {type = 'item', name = const:name_from_prefix(previous), amount = 1})
                     else
-                        table.insert(ingredients, { type = 'item', name = 'iron-plate', amount = 4 })
+                        table.insert(ingredients, {type = 'item', name = 'iron-plate', amount = 4})
                     end
 
                     return ingredients
                 end,
                 prerequisites = function()
-                    local prerequisites = { 'logistics-0' }
+                    local prerequisites = {'logistics-0'}
                     if check_chute() then
                         table.insert(prerequisites, const:name_from_prefix(previous))
                     end
@@ -661,7 +683,9 @@ local loaders = {
                     return prerequisites
                 end,
                 research_trigger = {
-                    type = 'craft-item', item = 'iron-gear-wheel', count = 200,
+                    type = 'craft-item',
+                    item = 'iron-gear-wheel',
+                    count = 200
                 },
                 energy_source = energy_void,
                 -- I really would like to make this steam powered just as the steam inserter
@@ -680,10 +704,10 @@ local loaders = {
                     items_per_second = 7.5,
                     rotation_speed = 0.046875,
                     inserter_pairs = 1,
-                    stack_size_bonus = 0,
-                },
+                    stack_size_bonus = 0
+                }
             }
-        end,
+        end
     },
     ['bob-turbo'] = {
         condition = check_bob,
@@ -699,32 +723,31 @@ local loaders = {
                 upgrade_from = const:name_from_prefix(previous),
                 corpse_gfx = '', -- use basic graphics for explosion and remnants
                 ingredients = function()
-                    local inserter = (settings.startup['bobmods-logistics-inserteroverhaul'].value == true)
-                        and 'bob-turbo-inserter'
-                        or 'bob-express-inserter'
+                    local inserter =
+                        (settings.startup['bobmods-logistics-inserteroverhaul'].value == true) and 'bob-turbo-inserter' or
+                        'bob-express-inserter'
 
                     return select_data {
                         bob = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 1 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = inserter,                          amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = inserter, amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        bob = { 'logistics-4', const:name_from_prefix(previous), },
+                        bob = {'logistics-4', const:name_from_prefix(previous)}
                     }
                 end,
                 speed_config = {
                     items_per_second = 60,
                     rotation_speed = 0.25,
                     inserter_pairs = 1,
-                    stack_size_bonus = 0,
-                },
+                    stack_size_bonus = 0
+                }
             }
-        end,
-
+        end
     },
     ['bob-ultimate'] = {
         condition = check_bob,
@@ -740,31 +763,31 @@ local loaders = {
                 upgrade_from = const:name_from_prefix(previous),
                 corpse_gfx = '', -- use basic graphics for explosion and remnants
                 ingredients = function()
-                    local inserter = (settings.startup['bobmods-logistics-inserteroverhaul'].value == true)
-                        and 'bob-express-inserter'
-                        or 'bob-express-bulk-inserter'
+                    local inserter =
+                        (settings.startup['bobmods-logistics-inserteroverhaul'].value == true) and
+                        'bob-express-inserter' or
+                        'bob-express-bulk-inserter'
                     return select_data {
                         bob = {
-                            { type = 'item', name = const:name_from_prefix(previous),  amount = 1 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = inserter,                          amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = inserter, amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        bob = { 'logistics-5', const:name_from_prefix(previous), },
+                        bob = {'logistics-5', const:name_from_prefix(previous)}
                     }
                 end,
                 speed_config = {
                     items_per_second = 75,
                     rotation_speed = 0.1875,
                     inserter_pairs = 1,
-                    stack_size_bonus = 3,
-                },
+                    stack_size_bonus = 3
+                }
             }
-        end,
-
+        end
     },
     ['af2-pro-1'] = {
         condition = check_adv_furnace_2,
@@ -782,28 +805,29 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         adv_furnace_2 = {
-                            { type = 'item', name = const:name_from_prefix(previous), amount = 1 },
-                            { type = 'item', name = 'underground-belt-pro',           amount = 1 },
-                            { type = 'item', name = 'loader-pro-02',                  amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = 'underground-belt-pro', amount = 1},
+                            {type = 'item', name = 'loader-pro-02', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        adv_furnace_2 = { 'logistics-3', const:name_from_prefix(previous), },
+                        adv_furnace_2 = {'logistics-3', const:name_from_prefix(previous)}
                     }
                 end,
                 belt_color_selector = function(loader)
-                    loader.belt_animation_set = util.copy(assert(data.raw['underground-belt']['underground-belt-pro'].belt_animation_set))
+                    loader.belt_animation_set =
+                        util.copy(assert(data.raw['underground-belt']['underground-belt-pro'].belt_animation_set))
                 end,
                 speed_config = {
                     items_per_second = 75,
                     rotation_speed = 0.1875,
                     inserter_pairs = 1,
-                    stack_size_bonus = 3,
-                },
+                    stack_size_bonus = 3
+                }
             }
-        end,
+        end
     },
     ['af2-pro-2'] = {
         condition = check_adv_furnace_2,
@@ -821,30 +845,30 @@ local loaders = {
                 ingredients = function()
                     return select_data {
                         adv_furnace_2 = {
-                            { type = 'item', name = const:name_from_prefix(previous), amount = 1 },
-                            { type = 'item', name = 'underground-belt-pro2',          amount = 1 },
-                            { type = 'item', name = 'loader-pro-03',                  amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 1},
+                            {type = 'item', name = 'underground-belt-pro2', amount = 1},
+                            {type = 'item', name = 'loader-pro-03', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        adv_furnace_2 = { 'logistics-3', const:name_from_prefix(previous), },
+                        adv_furnace_2 = {'logistics-3', const:name_from_prefix(previous)}
                     }
                 end,
                 belt_color_selector = function(loader)
-                    loader.belt_animation_set = util.copy(assert(data.raw['underground-belt']['underground-belt-pro2'].belt_animation_set))
+                    loader.belt_animation_set =
+                        util.copy(assert(data.raw['underground-belt']['underground-belt-pro2'].belt_animation_set))
                 end,
                 speed_config = {
                     items_per_second = 105,
                     rotation_speed = 0.25,
                     inserter_pairs = 1,
-                    stack_size_bonus = 5,
-                },
+                    stack_size_bonus = 5
+                }
             }
-        end,
+        end
     },
-
     -- =================================================
     -- == Space Exploration
     -- =================================================
@@ -856,21 +880,21 @@ local loaders = {
                 order = 'd[e]-a',
                 subgroup = 'belt',
                 stack_size = 50,
-                tint = { r = 240 / 255, g = 240 / 255, b = 240 / 255, a = 125 / 255 },
+                tint = {r = 240 / 255, g = 240 / 255, b = 240 / 255, a = 125 / 255},
                 speed = data.raw['transport-belt'][dash_prefix .. 'transport-belt'].speed,
                 corpse_gfx = 'express',
                 ingredients = function()
                     return select_data {
                         space_exploration = {
-                            { type = 'item', name = dash_prefix .. 'transport-belt',   amount = 1 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt', amount = 1 },
-                            { type = 'item', name = 'bulk-inserter',                   amount = 2 },
-                        },
+                            {type = 'item', name = dash_prefix .. 'transport-belt', amount = 1},
+                            {type = 'item', name = dash_prefix .. 'underground-belt', amount = 1},
+                            {type = 'item', name = 'bulk-inserter', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        space_exploration = { 'se-space-belt', },
+                        space_exploration = {'se-space-belt'}
                     }
                 end,
                 prototype_processor = allow_in_space,
@@ -878,12 +902,11 @@ local loaders = {
                     items_per_second = 45,
                     rotation_speed = 0.125,
                     inserter_pairs = 1,
-                    stack_size_bonus = 1,
+                    stack_size_bonus = 1
                 }
             }
-        end,
+        end
     },
-
     ['se-deep-space'] = {
         condition = check_space_exploration,
         data = function(dash_prefix)
@@ -894,27 +917,27 @@ local loaders = {
                 order = 'd[e]-b',
                 subgroup = 'belt',
                 stack_size = 50,
-                tint = { r = 25 / 255, g = 25 / 255, b = 25 / 255, a = 200 / 255 },
+                tint = {r = 25 / 255, g = 25 / 255, b = 25 / 255, a = 200 / 255},
                 speed = data.raw['transport-belt'][dash_prefix .. 'transport-belt' .. color].speed,
                 upgrade_from = const:name_from_prefix(previous),
                 corpse_gfx = 'express',
-
                 ingredients = function()
                     return select_data {
                         space_exploration = {
-                            { type = 'item', name = const:name_from_prefix(previous),           amount = 2 },
-                            { type = 'item', name = dash_prefix .. 'underground-belt' .. color, amount = 1 },
-                            { type = 'item', name = 'se-nanomaterial',                          amount = 2 },
-                        },
+                            {type = 'item', name = const:name_from_prefix(previous), amount = 2},
+                            {type = 'item', name = dash_prefix .. 'underground-belt' .. color, amount = 1},
+                            {type = 'item', name = 'se-nanomaterial', amount = 2}
+                        }
                     }
                 end,
                 prerequisites = function()
                     return select_data {
-                        space_exploration = { 'se-deep-space-transport-belt', const:name_from_prefix(previous) },
+                        space_exploration = {'se-deep-space-transport-belt', const:name_from_prefix(previous)}
                     }
                 end,
                 belt_color_selector = function(loader)
-                    loader.belt_animation_set = util.copy(
+                    loader.belt_animation_set =
+                        util.copy(
                         assert(
                             data.raw['underground-belt'][dash_prefix .. 'underground-belt' .. color].belt_animation_set
                         )
@@ -925,11 +948,11 @@ local loaders = {
                     items_per_second = 90,
                     rotation_speed = 0.25,
                     inserter_pairs = 1,
-                    stack_size_bonus = 3,
+                    stack_size_bonus = 3
                 }
             }
         end
-    },
+    }
 }
 
 ---@class miniloader.LoaderTemplates
